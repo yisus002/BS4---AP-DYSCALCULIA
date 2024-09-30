@@ -1,0 +1,89 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Grade Manager</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Student Grade Manager</h1>
+
+        <section class="add-student">
+            <h2>Add New Student Grade</h2>
+            <form method="POST">
+                {{ form.hidden_tag() }}
+                <div class="form-group">
+                    {{ form.name.label }}
+                    {{ form.name() }}
+                </div>
+                <div class="form-group">
+                    {{ form.group.label }}
+                    {{ form.group() }}
+                </div>
+                <div class="form-group">
+                    {{ form.subject.label }}
+                    {{ form.subject() }}
+                </div>
+                <div class="form-group">
+                    {{ form.grade.label }}
+                    {{ form.grade() }}
+                </div>
+                {{ form.submit() }}
+            </form>
+        </section>
+
+        <section class="search-student">
+            <h2>Search Student Grades</h2>
+            <form action="{{ url_for('main.search') }}" method="GET">
+                {{ search_form.search.label }}
+                {{ search_form.search() }}
+                {{ search_form.submit() }}
+            </form>
+        </section>
+
+        <section class="results">
+            <h2>Results</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Group</th>
+                        <th>Subject</th>
+                        <th>Grade</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <td>{{ student.name }}</td>
+                        <td>{{ student.group }}</td>
+                        <td>{{ student.subject }}</td>
+                        <td>{{ student.grade }}</td>
+                        <td>
+                            <a href="{{ url_for('main.edit_student', id=student.id) }}">Edit</a>
+                            <a href="{{ url_for('main.delete_student', id=student.id) }}" onclick="return confirm('Are you sure?')">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+
+        <section class="statistics">
+            <h2>Grade Statistics</h2>
+            <img src="data:image/png;base64,{{ plot_url }}" alt="Grade Distribution">
+            <ul>
+                <li>Mean: {{ stats.mean|round(2) }}</li>
+                <li>Median: {{ stats.median|round(2) }}</li>
+                <li>Standard Deviation: {{ stats.std|round(2) }}</li>
+                <li>Minimum: {{ stats.min|round(2) }}</li>
+                <li>Maximum: {{ stats.max|round(2) }}</li>
+            </ul>
+        </section>
+    </div>
+</body>
+</html>
